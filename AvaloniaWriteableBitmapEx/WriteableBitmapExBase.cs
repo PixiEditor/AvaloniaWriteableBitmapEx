@@ -1,0 +1,91 @@
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using WriteableBitmapEx.Models;
+
+namespace AvaloniaWriteableBitmapEx
+{
+    //Based on WPF WriteableBitmapEx solutions
+    public static class WriteableBitmapExBase
+    {
+        public static int ConvertColor(Color color)
+        {
+            var col = 0;
+
+            if (color.A != 0)
+            {
+                var a = color.A + 1;
+                col = (color.A << 24)
+                      | ((byte)((color.R * a) >> 8) << 16)
+                      | ((byte)((color.G * a) >> 8) << 8)
+                      | (byte)((color.B * a) >> 8);
+            }
+
+            return col;
+        }
+
+        /// <summary>
+        /// Sets the color of the pixel.
+        /// For best performance this method should not be used in iterative real-time scenarios. Implement the code directly inside a loop.
+        /// </summary>
+        /// <param name="bmp">The WriteableBitmap.</param>
+        /// <param name="x">The x coordinate (row).</param>
+        /// <param name="y">The y coordinate (column).</param>
+        /// <param name="r">The red value of the color.</param>
+        /// <param name="g">The green value of the color.</param>
+        /// <param name="b">The blue value of the color.</param>
+        public static void SetPixel(this WriteableBitmap bmp, int x, int y, byte r, byte g, byte b)
+        {
+            using (var context = bmp.GetBitmapContext())
+            {
+                context.Pixels[y * context.Width + x] = (255 << 24) | (r << 16) | (g << 8) | b;
+            }
+        }
+
+        /// <summary>
+        /// Sets the color of the pixel.
+        /// For best performance this method should not be used in iterative real-time scenarios. Implement the code directly inside a loop.
+        /// </summary>
+        /// <param name="bmp">The WriteableBitmap.</param>
+        /// <param name="x">The x coordinate (row).</param>
+        /// <param name="y">The y coordinate (column).</param>
+        /// <param name="color">The color.</param>
+        public static void SetPixel(this WriteableBitmap bmp, int x, int y, Color color)
+        {
+            using (var context = bmp.GetBitmapContext())
+            {
+                context.Pixels[y * context.Width + x] = ConvertColor(color);
+            }
+        }
+
+        /// <summary>
+        /// Gets the color of the pixel at the x, y coordinate as a Color struct.
+        /// For best performance this method should not be used in iterative real-time scenarios. Implement the code directly inside a loop.
+        /// </summary>
+        /// <param name="bmp">The WriteableBitmap.</param>
+        /// <param name="x">The x coordinate of the pixel.</param>
+        /// <param name="y">The y coordinate of the pixel.</param>
+        /// <returns>The color of the pixel at x, y as a Color struct.</returns>
+        public static Color GetPixel(this WriteableBitmap bmp, int x, int y)
+        {
+            using (var context = bmp.GetBitmapContext(ReadWriteMode.ReadOnly))
+            {
+                var c = context.Pixels[y * context.Width + x];
+                var a = (byte)(c >> 24);
+
+                // Prevent division by zero
+                int ai = a;
+                if (ai == 0)
+                {
+                    ai = 1;
+                }
+
+                // Scale inverse alpha to use cheap integer mul bit shift
+                ai = ((255 << 8) / ai);
+                return Color.FromArgb(a,
+                    (byte)((((c >> 16) & 0xFF) * ai) >> 8),
+                    (byte)((((c >> 8) & 0xFF) * ai) >> 8),
+                    (byte)(((c & 0xFF) * ai) >> 8));
+            }
+        }
+    }
+}
