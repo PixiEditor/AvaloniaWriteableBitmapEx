@@ -1,5 +1,4 @@
 using Avalonia.Media.Imaging;
-using WriteableBitmapEx.Models;
 
 namespace AvaloniaWriteableBitmapEx
 {
