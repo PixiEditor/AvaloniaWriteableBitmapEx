@@ -1,7 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AvaloniaWriteableBitmapEx
 {
@@ -22,6 +19,6 @@ namespace AvaloniaWriteableBitmapEx
 
             return new WriteableBitmap(new Avalonia.PixelSize(pixelWidth, pixelHeight), new Avalonia.Vector(96.0, 96.0), 
             Avalonia.Platform.PixelFormat.Bgra8888);
-        }
+        }       
     }
 }

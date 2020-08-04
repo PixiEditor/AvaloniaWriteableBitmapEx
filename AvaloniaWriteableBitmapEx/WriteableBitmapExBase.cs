@@ -4,7 +4,7 @@ using Avalonia.Media.Imaging;
 namespace AvaloniaWriteableBitmapEx
 {
     //Based on WPF WriteableBitmapEx solutions
-    public static class WriteableBitmapExBase
+    public static partial class WriteableBitmapEx
     {
         public static int ConvertColor(Color color)
         {
