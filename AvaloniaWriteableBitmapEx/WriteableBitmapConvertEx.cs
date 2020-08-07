@@ -7,7 +7,6 @@ namespace AvaloniaWriteableBitmapEx
 {
     public static partial class WriteableBitmapEx
     {
-        public const int SizeOfArgb = 4;
         /// <summary>
         /// Copies the Pixels from the WriteableBitmap into a ARGB byte array starting at a specific Pixels index.
         /// </summary>
